@@ -11,6 +11,7 @@ class ScrapOnliner
   end
 
   def scroll(times = 1000, scroll = 100)
+  	check_visit
     if times.to_i.is_a?(Integer) == false || scroll.to_i.is_a?(Integer) == false
       puts 'give Integer arguments'
       nil
@@ -20,11 +21,11 @@ class ScrapOnliner
   end
 
   def make_all_elements_visible(tag_name, display_type = 'block')
+  	check_visit
     scraper.execute_script("x = document.getElementsByTagName('#{tag_name}'); for(i=0;i<x.length;i++) x[i].setAttribute('style', 'display: #{display_type}');")
   end
 
   def scrap_images_src
-    check_visit
     scroll
     scraper.find_all('figure a img').each { |e| images_src.push(e['src']) if /.+news.+.[jpeg|png|jpg]/.match(e['src']) }
   end
@@ -35,7 +36,6 @@ class ScrapOnliner
   end
 
   def scrap_descriptions
-    check_visit
     make_all_elements_visible('p')
     scraper.find_all('.b-main-page-grid-4 p').each { |par| descriptions.push(par.text) }
     3.times { descriptions.delete_at(descriptions.length - 1) }
